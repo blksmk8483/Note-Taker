@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const data = require('./db/db.json');
-const uuid = require('./helpers/uuid');
+const { v4: uuidv4 } = require('uuid');
 const fs = require("fs");
 
 // This gives me my port and will also work on Heroku
@@ -38,7 +38,34 @@ app.get('/api/notes', (req, res) => res.json(data));
 
 // This is my POST API route that should receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client.
 
-// I don't remember how to do this so I am going to study this tomorrow and then finish......
+app.post('/api/notes', (req, res) => {
+    // Log that a POST request was received
+    console.info(`${req.method} request received to add a review`);
+  
+    // Destructuring assignment for the items in req.body
+    const { product, review, username } = req.body;
+  
+    // If all the required properties are present
+    if (product && review && username) {
+      // Variable for the object we will save
+      const newReview = {
+        product,
+        review,
+        username,
+        review_id: { v4: uuidv4 },
+      };
+  
+      const response = {
+        status: 'success',
+        body: newReview,
+      };
+  
+      console.log(response);
+      res.status(201).json(response);
+    } else {
+      res.status(500).json('Error in posting review');
+    }
+  });
 
 
 
