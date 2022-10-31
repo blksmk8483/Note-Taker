@@ -21,7 +21,7 @@ To make a unique id when the user saves I used the npm package UUID.
 Click [here](https://blksmk8483.github.io/Work-Day-Scheduler/) to go to my Note Taker applicaiton. 
 
 
-![My Image](Assets/11-express-homework-demo-01.png)
+![My Image](Assets/11-express-homework-demo-02.png)
 
 
 ## Credits
