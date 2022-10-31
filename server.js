@@ -3,17 +3,13 @@ const path = require('path');
 const data = require('./db/db.json');
 const { v4: uuidv4 } = require('uuid');
 const fs = require("fs");
-// const { json } = require('body-parser');
 
-// This gives me my port and will also work on Heroku
 const PORT = process.env.PORT || 3001;
-
 const app = express();
 
-// This is my middleware.
+//------------MIDDLEWARE------------
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.use(express.static('public'));
 
 //------------HTML GET REQUEST------------
@@ -30,17 +26,14 @@ app.get('/api/notes', (req, res) => res.json(data));
 
 
 // This is my POST API route that should receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client.
-
 app.post('/api/notes', (req, res) => {
     // Log that a POST request was received
     console.info(`${req.method} request received to add a review`);
   
-    // Destructuring assignment for the items in req.body
     const { title, text } = req.body;
   
-    // If all the required properties are present
     if (title && text) {
-      // Variable for the object we will save
+      
       const newNote = {
         title: title,
         text: text,
