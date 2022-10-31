@@ -3,6 +3,7 @@ const path = require('path');
 const data = require('./db/db.json');
 const { v4: uuidv4 } = require('uuid');
 const fs = require("fs");
+// const { json } = require('body-parser');
 
 // This gives me my port and will also work on Heroku
 const PORT = process.env.PORT || 3001;
@@ -22,14 +23,6 @@ app.get('/notes', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/notes.html'))
 ); 
 
-// This is my HTML route for my index.html
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
-);
-// I think this is a wildcard route.
-// The example I used was from Unit 11, #28, the mini-project was setup like this but it took it to an error page.
-
-
 // ------------API ROUTES------------
 
 // This is my GET API route that should read my db.json file and return all saved notes as JSON
@@ -43,31 +36,34 @@ app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a review`);
   
     // Destructuring assignment for the items in req.body
-    const { product, review, username } = req.body;
+    const { title, text } = req.body;
   
     // If all the required properties are present
-    if (product && review && username) {
+    if (title && text) {
       // Variable for the object we will save
-      const newReview = {
-        product,
-        review,
-        username,
-        review_id: { v4: uuidv4 },
+      const newNote = {
+        title: title,
+        text: text,
+        id: uuidv4()
       };
   
-      const response = {
-        status: 'success',
-        body: newReview,
-      };
-  
-      console.log(response);
-      res.status(201).json(response);
+      data.push(newNote);
+      console.log(data);
+
+      fs.writeFile(`./db/db.json`, JSON.stringify(data), (err) =>
+      err ? console.error(err): console.log(`Congrats! It worked!`));
+ 
+      res.status(201).json(data);
     } else {
       res.status(500).json('Error in posting review');
     }
   });
 
-
+  // ------------WILDCARD ROUTE------------
+// This is my wildcard HTML route for my index.html
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/index.html'))
+);
 
 
 // Telling Express to listen.
